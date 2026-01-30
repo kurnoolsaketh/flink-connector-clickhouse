@@ -5,6 +5,9 @@ on:
     tags:
       - '*'
 
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   update-version-and-release:
     runs-on: ubuntu-latest
@@ -41,11 +44,11 @@ jobs:
       - name: Commit changes
         if: ${{ steps.detect_changes.outputs.num_lines_changed != '0' }}
         run: |
-          git checkout -b automation-update-version-${{ github.ref_name }}
+          git checkout -b automation-update-version-to-${{ steps.get_new_version.outputs.new_version }}
           git add .
           git commit -m "Release commit for tag ${{ github.ref_name }}"
           git push
-          gh pr create --title "[AUTOMATION] Update Clickhouse connector version to ${{ steps.get_new_version.outputs.new_version }} in *.pom, *.sbt, and README" --body "This is an automated PR to update the connector version in all affected places."
+          gh pr create --title "[AUTOMATION] Update Clickhouse connector version to ${{ steps.get_new_version.outputs.new_version }} in *.pom, *.sbt, and README" --body "This is an automated PR to update the connector version in all affected places." 
 
 #      - name: Force update tag
 #        if: ${{ steps.detect_changes.outputs.num_lines_changed != '0' }}
@@ -55,8 +58,6 @@ jobs:
       - name: Create GitHub Release
         if: ${{ steps.detect_changes.outputs.num_lines_changed != '0' }}
         uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
           release_name: ${{ github.ref_name }}

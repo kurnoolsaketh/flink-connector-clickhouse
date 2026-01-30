@@ -7,7 +7,7 @@ organization := "clickhouse"
 version := "1.0"
 
 val flinkVersion = "2.0.0"
-val clickHouseVersion = "0.1.3"
+val clickHouseVersion = "0.1.5"
 
 resolvers += "Local Maven Repository" at "file://" + Path.userHome.absolutePath + "/.m2/repository"
 

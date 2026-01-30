@@ -111,6 +111,7 @@ val shadowSourcesJar by tasks.registering(Jar::class) {
     archiveClassifier.set("all-sources")
     from(sourceSets.main.get().allSource)
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    dependsOn(":flink-connector-clickhouse-base:generateVersionClass")
 }
 
 publishing {

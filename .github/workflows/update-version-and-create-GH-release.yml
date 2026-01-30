@@ -6,7 +6,7 @@ on:
       - '*'
 
 env:
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   update-version-and-release:
@@ -58,4 +58,3 @@ jobs:
           release_name: ${{ github.ref_name }}
           draft: false
           prerelease: false
-          token: ${{ secrets.GITHUB_TOKEN }}

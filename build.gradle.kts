@@ -6,7 +6,17 @@ plugins {
     id("com.gradleup.shadow") version "9.0.2"
 }
 
-val sinkVersion by extra(file("version.txt").readText())
+fun isVersionFileExists(): Boolean = file("version.txt").exists()
+
+fun getVersionFromFile(): String = file("version.txt").readText().trim()
+
+fun getProjectVersion(): String {
+    if (!isVersionFileExists())
+        throw IllegalStateException("Can not find version.txt")
+    return getVersionFromFile()
+}
+
+val sinkVersion by extra(getProjectVersion())
 val flinkVersion by extra("1.18.0")
 val clickhouseVersion by extra("0.9.5")
 val junitVersion by extra("5.8.2")

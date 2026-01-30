@@ -1,14 +1,6 @@
-OLD="0.1.2"
-NEW="0.1.3"
-
-HERE=` basename "$PWD"`
-if [[ "$HERE" != "tools" ]]; then
-    echo "Please only execute in the tools/ directory";
-    exit 1;
-fi
+NEW_VERSION=$(cat version.txt)
 
 # change version in all relevant files
-find .. -name 'version.txt' -type f -exec perl -pi -e 's#'$OLD'#'$NEW'#' {} \;
-find .. -name 'pom.xml' -type f -exec perl -pi -e 's#<version>'"$OLD"'</version>#<version>'"$NEW"'</version>#' {} \;
-find .. -name 'README.md' -type f -exec perl -pi -e 's#<version>'"$OLD"'</version>#<version>'"$NEW"'</version>#' {} \;
-find .. -name 'build.sbt' -type f -exec perl -pi -e 's#"clickhouse" % "'"$OLD"'"#"clickhouse" % "'"$NEW"'"#' {} \;
+find .. -name 'pom.xml' -type f -exec perl -pi -e 's#<clickhouse.sink.version>[0-9\.]+</clickhouse.sink.version>#<clickhouse.sink.version>'"$NEW_VERSION"'</clickhouse.sink.version>#' {} \;
+find .. -name 'README.md' -type f -exec perl -pi -e 's#<version>[0-9\.]+</version>#<version>'"$NEW_VERSION"'</version>#' {} \; # TODO: remove this as necessary
+find .. -name 'build.sbt' -type f -exec perl -pi -e 's#val clickHouseVersion = "[0-9\.]+"#val clickHouseVersion = "'$NEW_VERSION'"#' {} \;

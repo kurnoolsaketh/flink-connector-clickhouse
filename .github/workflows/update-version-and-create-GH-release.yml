@@ -16,10 +16,6 @@ jobs:
           ref: ${{ github.ref_name }}
           fetch-depth: 0
 
-      - name: Checkout main
-        run: |
-          git checkout main
-
       - name: Configure git user
         run: |
           git config --global user.email "actions@github.com"
@@ -28,7 +24,7 @@ jobs:
 
       - name: Run version change script
         run: |
-          chmod +x ./tools/change-version.sh
+          chmod +x tools/change-version.sh
           ./tools/change-version.sh
 
       - name: Detect changes
@@ -36,17 +32,25 @@ jobs:
         run: |
           echo "num_lines_changed=$(git diff --stat | wc -l | awk '{$1=$1;print}')" >> $GITHUB_OUTPUT
 
+      - name: Get new version
+        id: get_new_version
+        if: ${{ steps.detect_changes.outputs.num_lines_changed != '0' }}
+        run: |
+          echo "new_version=$(cat version.txt | awk '{$1=$1;print}')" >> $GITHUB_OUTPUT
+
       - name: Commit changes
         if: ${{ steps.detect_changes.outputs.num_lines_changed != '0' }}
         run: |
+          git checkout -b automation-update-version-${{ github.ref_name }}
           git add .
           git commit -m "Release commit for tag ${{ github.ref_name }}"
-          git push origin main
+          git push
+          gh pr create --title "[AUTOMATION] Update Clickhouse connector version to ${{ steps.get_new_version.outputs.new_version }} in *.pom, *.sbt, and README" --body "This is an automated PR to update the connector version in all affected places."
 
-      - name: Force update tag
-        if: ${{ steps.detect_changes.outputs.num_lines_changed != '0' }}
-        run: |
-          git tag -af ${{ github.ref_name }}
+#      - name: Force update tag
+#        if: ${{ steps.detect_changes.outputs.num_lines_changed != '0' }}
+#        run: |
+#          git tag -af ${{ github.ref_name }}
 
       - name: Create GitHub Release
         if: ${{ steps.detect_changes.outputs.num_lines_changed != '0' }}

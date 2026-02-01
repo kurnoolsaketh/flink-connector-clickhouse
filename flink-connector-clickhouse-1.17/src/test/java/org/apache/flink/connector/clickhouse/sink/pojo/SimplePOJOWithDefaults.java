@@ -3,7 +3,7 @@ package org.apache.flink.connector.clickhouse.sink.pojo;
 import java.time.LocalDateTime;
 
 /**
- * For testing most data types.
+ * For testing writing to a CH table with a default column.
  */
 public class SimplePOJOWithDefaults {
 

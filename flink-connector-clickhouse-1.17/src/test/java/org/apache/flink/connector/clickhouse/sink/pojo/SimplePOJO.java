@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 /**
- * For testing writing to a CH table with a default column.
+ * For testing most data types.
  */
 public class SimplePOJO {
 

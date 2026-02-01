@@ -4,7 +4,6 @@ import com.clickhouse.utils.writer.DataWriter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Serializable;
 
 public abstract class POJOConvertor<InputT> implements Serializable {
@@ -18,12 +17,9 @@ public abstract class POJOConvertor<InputT> implements Serializable {
 
     public byte[] convert(InputT input) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        DataWriter dataWriter = DataWriter.of(this.isSchemaHasDefaults(), out);
+        DataWriter dataWriter = DataWriter.of(schemaHasDefaults, out);
         instrument(dataWriter, input);
         return out.toByteArray();
     }
 
-    public boolean isSchemaHasDefaults() {
-        return schemaHasDefaults;
-    }
 }

@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public class DataWriter {
     private boolean defaultsSupport = false;
-    private OutputStream out = null;
+    private final OutputStream out;
 
     private DataWriter(boolean defaultsSupport, OutputStream out) {
         this.out = out;

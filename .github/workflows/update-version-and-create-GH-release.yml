@@ -3,7 +3,7 @@ name: Update Connector Version and Create GH Release
 on:
   push:
     tags:
-      - '*'
+      - 'v*'
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -25,10 +25,12 @@ jobs:
           git config --global user.name "GitHub Action"
           git config --global --add --bool push.autoSetupRemote true
 
-      - name: Run version change script
+      - name: Change version in all relevant files
         run: |
-          chmod +x tools/change-version.sh
-          ./tools/change-version.sh
+          NEW_VERSION=$(cat version.txt)
+          find .. -name 'pom.xml' -type f -exec perl -pi -e 's#<clickhouse.sink.version>[0-9\.]+</clickhouse.sink.version>#<clickhouse.sink.version>'"$NEW_VERSION"'</clickhouse.sink.version>#' {} \;
+          find .. -name 'README.md' -type f -exec perl -pi -e 's#<version>[0-9\.]+</version>#<version>'"$NEW_VERSION"'</version>#' {} \;
+          find .. -name 'build.sbt' -type f -exec perl -pi -e 's#val clickHouseVersion = "[0-9\.]+"#val clickHouseVersion = "'$NEW_VERSION'"#' {} \;
 
       - name: Detect changes
         id: detect_changes

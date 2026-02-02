@@ -10,14 +10,15 @@ val sinkVersion by extra(getProjectVersion())
 val flinkVersion by extra("1.18.0")
 val clickhouseVersion by extra("0.9.5")
 val junitVersion by extra("5.8.2")
+val versionFile by extra("version.txt")
 
-fun isVersionFileExists(): Boolean = file("version.txt").exists()
+fun isVersionFileExists(): Boolean = file(versionFile).exists()
 
-fun getVersionFromFile(): String = file("version.txt").readText().trim()
+fun getVersionFromFile(): String = file(versionFile).readText().trim()
 
 fun getProjectVersion(): String {
     if (!isVersionFileExists())
-        throw IllegalStateException("Cannot find version.txt")
+        throw IllegalStateException("Cannot find %s".format(versionFile))
     return getVersionFromFile()
 }
 

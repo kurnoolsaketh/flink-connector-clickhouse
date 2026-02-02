@@ -58,5 +58,5 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           release_name: ${{ steps.get_new_version.outputs.new_version }}
-          draft: false
+          draft: true
           prerelease: false

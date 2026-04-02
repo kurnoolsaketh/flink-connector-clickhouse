@@ -152,7 +152,11 @@ jobs:
           - Be constructive and specific in your feedback
           PROMPT_EOF
 
-      # ── 10. Spawn VM ────────────────────────────────────────────────────────────
+      # ── 10. Ensure macOS DHCP is running for Tart vmnet ─────────────────────────
+      - name: Restart DHCP service
+        run: sudo launchctl kickstart -k system/com.apple.bootpd
+
+      # ── 11. Spawn VM ────────────────────────────────────────────────────────────
       - name: Spawn tachikoma VM
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

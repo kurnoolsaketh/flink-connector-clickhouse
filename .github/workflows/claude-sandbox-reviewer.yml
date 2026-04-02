@@ -78,14 +78,28 @@ jobs:
           tart pull ghcr.io/cirruslabs/ubuntu:latest
           tart clone ghcr.io/cirruslabs/ubuntu:latest ubuntu
 
-      # ── 6. Download tachikoma binary ────────────────────────────────────────────
-      - name: Install tachikoma
+      # ── 6. Build tachikoma from branch (temporary, for debugging) ───────────────
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+
+      - name: Build tachikoma from source
         run: |
-          gh release download --repo ClickHouse/tachikoma \
-            --pattern 'tachikoma-macos-arm64' --dir /usr/local/bin
-          chmod +x /usr/local/bin/tachikoma-macos-arm64
-          mv /usr/local/bin/tachikoma-macos-arm64 /usr/local/bin/tachikoma
+          git clone --branch improvement/add-non-interactive-mode --depth 1 \
+            https://github.com/ClickHouse/tachikoma.git /tmp/tachikoma-build
+          cd /tmp/tachikoma-build
+          cargo build --release
+          cp target/release/tachikoma /usr/local/bin/tachikoma
+          chmod +x /usr/local/bin/tachikoma
           tachikoma --version
+
+      # # ── 6. Download tachikoma binary ──────────────────────────────────────────
+      # - name: Install tachikoma
+      #   run: |
+      #     gh release download --repo ClickHouse/tachikoma \
+      #       --pattern 'tachikoma-macos-arm64' --dir /usr/local/bin
+      #     chmod +x /usr/local/bin/tachikoma-macos-arm64
+      #     mv /usr/local/bin/tachikoma-macos-arm64 /usr/local/bin/tachikoma
+      #     tachikoma --version
 
       # ── 7. Configure tachikoma ──────────────────────────────────────────────────
       - name: Write tachikoma config
